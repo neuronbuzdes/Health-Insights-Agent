@@ -23,10 +23,31 @@ class AuthService:
             st.error(f"Failed to initialize services: {str(e)}")
             raise e
         
+        # Try to restore session from Supabase if no current session
+        self.try_restore_session()
+        
         # Validate session on initialization
         if 'auth_token' in st.session_state:
             if not self.validate_session_token():
                 self.sign_out()
+    
+    def try_restore_session(self):
+        """Try to restore session from Supabase stored session."""
+        try:
+            # Check if Supabase has a stored session
+            session = self.supabase.client.auth.get_session()
+            if session and session.access_token and 'auth_token' not in st.session_state:
+                # Validate the stored session
+                user = self.supabase.client.auth.get_user()
+                if user and user.user:
+                    user_data = self.get_user_data(user.user.id)
+                    if user_data:
+                        # Restore session state
+                        st.session_state.auth_token = session.access_token
+                        st.session_state.user = user_data
+        except Exception:
+            # If restoration fails, continue without session
+            pass
 
     def validate_email(self, email):
         """Validate email format."""
@@ -171,12 +192,12 @@ class AuthService:
 
     def delete_session(self, session_id):
         try:
-            messages_delete = self.supabase.table('chat_messages')\
+            self.supabase.table('chat_messages')\
                 .delete()\
                 .eq('session_id', session_id)\
                 .execute()
 
-            session_delete = self.supabase.table('chat_sessions')\
+            self.supabase.table('chat_sessions')\
                 .delete()\
                 .eq('id', session_id)\
                 .execute()
