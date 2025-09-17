@@ -3,13 +3,6 @@
 AI Agent to analyze blood reports and provide detailed health insights.
 
 <p align="center">
-  <a href="#-features">Features</a> |
-  <a href="#%EF%B8%8F-tech-stack">Tech Stack</a> |
-  <a href="#-installation">Installation</a> |
-  <a href="#-contributing">Contributing</a> |
-</p>
-
-<p align="center">
   <a href="https://github.com/harshhh28/hia"><img src="https://raw.githubusercontent.com/harshhh28/hia/main/public/HIA_demo.gif" alt="Usage Demo"></a>
 </p>
 
